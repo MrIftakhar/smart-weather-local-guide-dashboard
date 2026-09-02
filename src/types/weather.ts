@@ -22,11 +22,10 @@ export interface HourlyForecast {
 
 export interface DailyForecast {
   day: string;
-  dateFormatted: string;
   high: number;
   low: number;
   condition: string;
-  hourly: HourlyForecast[];
+  pop: number;
 }
 
 export interface WeatherData {
