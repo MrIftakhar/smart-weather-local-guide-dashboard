@@ -7,37 +7,33 @@ import { Sun, Wind, Droplets, ShieldAlert, Clock, Calendar, CloudRain, MapPin, L
 interface DashboardViewProps {
   unit: 'C' | 'F';
   isDarkMode?: boolean;
+  weather?: WeatherData | null;
   onLocationResolved?: (lat: number, lon: number, locationName: string) => void;
 }
 
-export default function DashboardView({ unit, isDarkMode = false, onLocationResolved }: DashboardViewProps) {
+export default function DashboardView({ unit, isDarkMode = false, weather: parentWeather, onLocationResolved }: DashboardViewProps) {
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [weather, setWeather] = useState<WeatherData | null>(parentWeather || null);
+  const [isLoading, setIsLoading] = useState(!parentWeather);
   const [locationError, setLocationError] = useState<string | null>(null);
 
   const fetchWeatherByCoords = useCallback(async (lat: number, lon: number) => {
     try {
       setIsLoading(true);
 
-      // Reverse geocode with zoom=14 to pinpoint exact Thana/suburb, city, and country
       const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=14`, {
         headers: { 'Accept-Language': 'en' }
       });
       const geoData = await geoRes.json();
       
       const address = geoData.address || {};
-      
-      // Extract precise hierarchy: Thana/Suburb/Town -> City/District -> Country
       const thana = address.suburb || address.neighbourhood || address.city_district || address.town || address.village || '';
       const city = address.city || address.county || address.state_district || '';
       const country = address.country || '';
       
-      // Combine into a clean format: "Thana, City, Country" (filtering out duplicates or empty fields)
       const locationParts = [thana, city, country].filter((val, index, self) => val && self.indexOf(val) === index);
       const formattedLocationName = locationParts.length > 0 ? locationParts.join(', ') : 'Current Location';
 
-      // Fetch weather data from Open-Meteo
       const weatherRes = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weather_code&timezone=auto`
       );
@@ -101,6 +97,12 @@ export default function DashboardView({ unit, isDarkMode = false, onLocationReso
   }, [onLocationResolved]);
 
   useEffect(() => {
+    if (parentWeather) {
+      setWeather(parentWeather);
+      setIsLoading(false);
+      return;
+    }
+
     if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by your browser.');
       setIsLoading(false);
@@ -114,13 +116,12 @@ export default function DashboardView({ unit, isDarkMode = false, onLocationReso
       },
       (error) => {
         console.warn('Geolocation access denied:', error.message);
-        // Fallback to Dhaka coordinates if denied
         fetchWeatherByCoords(23.8103, 90.4125);
         setLocationError('Location permission denied. Displaying default area weather.');
       },
       { timeout: 10000, maximumAge: 0 }
     );
-  }, [fetchWeatherByCoords]);
+  }, [parentWeather, fetchWeatherByCoords]);
 
   if (isLoading || !weather || !weather.forecast) {
     return (
@@ -291,31 +292,6 @@ export default function DashboardView({ unit, isDarkMode = false, onLocationReso
           50% { transform: rotate(180deg) scale(1.08); }
           100% { transform: rotate(360deg) scale(1); }
         }
-
-        .wind-streak {
-          position: absolute;
-          height: 1.5px;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
-          border-radius: 50%;
-          animation: windFlow linear infinite;
-        }
-        @keyframes windFlow {
-          0% { transform: translateX(-120px); opacity: 0; }
-          50% { opacity: 0.6; }
-          100% { transform: translateX(300px); opacity: 0; }
-        }
-
-        .water-splash-ripple {
-          position: absolute;
-          border: 1.5px solid rgba(255, 255, 255, 0.75);
-          border-radius: 50%;
-          transform: scale(0);
-          animation: splashRipple cubic-bezier(0, 0.5, 0.5, 1) infinite;
-        }
-        @keyframes splashRipple {
-          0% { transform: scale(0.1); opacity: 0.9; }
-          100% { transform: scale(2.2); opacity: 0; }
-        }
       `}</style>
 
       {/* 2. Metric Gauges Grid */}
@@ -424,7 +400,7 @@ export default function DashboardView({ unit, isDarkMode = false, onLocationReso
           <h5 className="font-headline mb-0">24-Hour Overview ({activeDayData.day} - {activeDayData.dateFormatted})</h5>
         </div>
         <div className="d-flex flex-row gap-4 overflow-x-auto pb-2 w-100 hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory' }}>
-          {activeDayData.hourly?.map((hr: { time: string; temp: number; condition: string }, idx: number) => (
+          {activeDayData.hourly?.map((hr, idx) => (
             <div key={idx} className="d-flex flex-column align-items-center flex-shrink-0 text-center" style={{ minWidth: '75px', scrollSnapAlign: 'start' }}>
               <span className="font-label text-muted mb-2">{hr.time}</span>
               <div className="my-1">

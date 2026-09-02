@@ -1,3 +1,5 @@
+// src/types/weather.ts
+
 export interface CurrentWeather {
   city: string;
   temperature: number;
@@ -12,27 +14,22 @@ export interface CurrentWeather {
   localDate?: string; // e.g. "Wednesday, Sep 2"
 }
 
-export interface DailyForecast {
-  day: string;
-  high: number;
-  low: number;
-  condition: string;
-  pop: number;
-}
-
-export interface WeatherData {
-  current: CurrentWeather;
-  forecast: DailyForecast[];
-}
 export interface HourlyForecast {
-  time: string; // e.g. "12 AM"
+  time: string;
   temp: number;
   condition: string;
 }
 
-// Update WeatherData interface to include hourly array
+export interface DailyForecast {
+  day: string;
+  dateFormatted?: string;
+  high: number;
+  low: number;
+  condition: string;
+  hourly?: HourlyForecast[];
+}
+
 export interface WeatherData {
   current: CurrentWeather;
-  hourly: HourlyForecast[];
   forecast: DailyForecast[];
 }
