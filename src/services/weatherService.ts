@@ -1,7 +1,11 @@
 // src/services/weatherService.ts
 
 export async function fetchLocationWeather(query: string) {
-  let latitude: number, longitude: number, name: string, country: string;
+  // Initialize variables safely to satisfy TypeScript assignment checks
+  let latitude: number = 0;
+  let longitude: number = 0;
+  let name: string = 'Current Location';
+  let country: string = '';
 
   // Check if query is passed as coordinates (e.g. "23.81,90.41")
   if (query.includes(',')) {
@@ -14,7 +18,7 @@ export async function fetchLocationWeather(query: string) {
     }
   }
 
-  // If not coordinates, perform name geocoding search
+  // If not coordinates or coordinates were invalid, perform name geocoding search
   if (!latitude || !longitude) {
     const cleanQuery = query.split(',')[0].trim();
     const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cleanQuery)}&count=1&format=json`);
