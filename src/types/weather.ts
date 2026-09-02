@@ -1,5 +1,3 @@
-// src/types/weather.ts
-
 export interface CurrentWeather {
   city: string;
   temperature: number;
@@ -10,8 +8,8 @@ export interface CurrentWeather {
   windSpeed: number;
   uvIndex: number;
   airQuality: number;
-  localTime?: string; // e.g. "10:45 AM"
-  localDate?: string; // e.g. "Wednesday, Sep 2"
+  localTime?: string;
+  localDate?: string;
 }
 
 export interface HourlyForecast {
