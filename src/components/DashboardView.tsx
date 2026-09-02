@@ -7,7 +7,7 @@ import { Sun, Wind, Droplets, ShieldAlert, Clock, Calendar, CloudRain, MapPin, L
 interface DashboardViewProps {
   unit: 'C' | 'F';
   isDarkMode?: boolean;
-  weather?: WeatherData | null; // <-- Ensure this is present
+  weather?: WeatherData | null;
   onLocationResolved?: (lat: number, lon: number, locationName: string) => void;
 }
 

@@ -1,3 +1,5 @@
+// src/types/weather.ts
+
 export interface CurrentWeather {
   city: string;
   temperature: number;
@@ -20,11 +22,11 @@ export interface HourlyForecast {
 
 export interface DailyForecast {
   day: string;
-  dateFormatted?: string;
+  dateFormatted: string;
   high: number;
   low: number;
   condition: string;
-  hourly?: HourlyForecast[];
+  hourly: HourlyForecast[];
 }
 
 export interface WeatherData {
