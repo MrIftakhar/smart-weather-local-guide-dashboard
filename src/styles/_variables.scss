@@ -1,0 +1,138 @@
+// ==========================================
+// 1. Color Palette (Atmospheric Editorial)
+// ==========================================
+$color-primary: #1A1C1E;
+$color-secondary: #4D6B8C;
+$color-tertiary: #D4AF37;
+$color-neutral-bg: #F8FAFC;
+
+// Dark & Neutral Tones
+$color-dark-surface: #26292D;
+$color-gray-border: #E2E8F0;
+$color-gray-input: #EAEAEA;
+$color-text-muted: #64748B;
+$color-white: #FFFFFF;
+
+// Action/Alert Tones
+$color-danger: #C02626;
+
+// ==========================================
+// 2. Typography
+// ==========================================
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+
+$font-headline: 'Playfair Display', serif;
+$font-body: 'Hanken Grotesk', sans-serif;
+
+$font-size-xs: 0.75rem;     // 12px
+$font-size-sm: 0.875rem;    // 14px
+$font-size-base: 1rem;      // 16px
+$font-size-lg: 1.25rem;     // 20px
+$font-size-xl: 2rem;        // 32px
+$font-size-display: 3.5rem; // 56px
+
+// ==========================================
+// 3. Borders & Radius
+// ==========================================
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 20px;
+$radius-pill: 9999px;
+
+// ==========================================
+// 4. Mixins
+// ==========================================
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ==========================================
+// 5. Dynamic Theme Engine
+// ==========================================
+:root {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-primary: #1a1c1e;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --hero-bg: linear-gradient(135deg, #1a1c1e 0%, #4d6b8c 100%);
+}
+
+[data-theme='dark'] {
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --hero-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* Global Body & Layout Styling */
+body, 
+main, 
+header, 
+aside {
+  background-color: var(--bg-main) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Outer headings, paragraphs, and generic spans outside light containers */
+body h1, body h2, body h3, body h4, body h5, body h6,
+body p, body span:not(.badge):not(.btn) {
+  color: var(--text-primary);
+}
+
+/* Specific Theme Card Rules */
+.theme-card {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+
+  h1, h2, h3, h4, h5, h6, p, span:not(.badge):not(.text-muted) {
+    color: var(--text-primary) !important;
+  }
+}
+
+/* Muted Text Helper */
+.text-muted, 
+.font-label, 
+.theme-text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* Safeguard: Elements with forced light backgrounds MUST retain dark text */
+.bg-white, 
+.bg-light,
+.btn-light {
+  color: #1a1c1e !important;
+
+  h1, h2, h3, h4, h5, h6, p, span {
+    color: #1a1c1e !important;
+  }
+}
+/* Hero Card Explicit Overrides (Always keep text white regardless of theme mode) */
+.hero-weather-card {
+  background: var(--hero-bg) !important;
+  color: #ffffff !important;
+
+  h1, h2, h3, h4, h5, h6, 
+  .font-headline, 
+  .display-1, 
+  .display-5 {
+    color: #ffffff !important;
+  }
+
+  p, 
+  span, 
+  .font-body, 
+  .font-label {
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+
+  .badge {
+    color: #ffffff !important;
+  }
+}

@@ -566,10 +566,4 @@ body p, body span:not(.badge):not(.btn) {
 .input-search-group .input-ae-search:focus {
   border-color: #4D6B8C;
   background-color: #FFFFFF;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-}/*# sourceMappingURL=globals.css.map */
+}/*# sourceMappingURL=main.css.map */

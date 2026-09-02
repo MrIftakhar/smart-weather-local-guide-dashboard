@@ -1,0 +1,130 @@
+@import './variables';
+
+.btn-ae {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  padding: 0.625rem 1.5rem;
+  border-radius: $radius-sm;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid $color-secondary;
+    outline-offset: 2px;
+  }
+}
+
+// 1. Solid Primary (Dark)
+.btn-ae-primary {
+  @extend .btn-ae;
+  background-color: $color-primary;
+  color: $color-white;
+
+  &:hover {
+    background-color: lighten($color-primary, 10%);
+    color: $color-white;
+  }
+}
+
+// 2. Secondary (Light Surface)
+.btn-ae-secondary {
+  @extend .btn-ae;
+  background-color: darken($color-neutral-bg, 3%);
+  color: $color-primary;
+
+  &:hover {
+    background-color: darken($color-neutral-bg, 8%);
+  }
+}
+
+// 3. Inverted (Dark Gray)
+.btn-ae-inverted {
+  @extend .btn-ae;
+  background-color: $color-dark-surface;
+  color: $color-white;
+
+  &:hover {
+    background-color: lighten($color-dark-surface, 8%);
+    color: $color-white;
+  }
+}
+
+// 4. Outlined
+.btn-ae-outlined {
+  @extend .btn-ae;
+  background-color: transparent;
+  border-color: $color-primary;
+  color: $color-primary;
+
+  &:hover {
+    background-color: $color-primary;
+    color: $color-white;
+  }
+}
+
+// 5. Circular Icon Action Buttons
+.btn-ae-icon {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-pill;
+  color: $color-white;
+  border: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+
+  &.icon-dark { background-color: $color-primary; }
+  &.icon-secondary { background-color: $color-secondary; }
+  &.icon-tertiary { background-color: $color-tertiary; }
+  &.icon-danger { background-color: $color-danger; }
+}
+
+// 6. Square Accent Button
+.btn-ae-square-accent {
+  @include flex-center;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-md;
+  background-color: $color-tertiary;
+  color: $color-primary;
+  border: none;
+
+  &:hover {
+    background-color: darken($color-tertiary, 5%);
+  }
+}
+/* Mobile Sidebar Drawer Styling */
+@media (max-width: 991.98px) {
+  .sidebar-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1045;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar-drawer.show {
+    transform: translateX(0);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1040;
+  }
+}

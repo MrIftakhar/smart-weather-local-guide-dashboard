@@ -1,0 +1,19 @@
+// 1. Custom Variables
+@import './variables';
+
+$primary: $color-primary;
+$secondary: $color-secondary;
+$warning: $color-tertiary;
+$body-bg: $color-neutral-bg;
+$body-color: $color-primary;
+$font-family-base: $font-body;
+$border-radius-lg: $radius-lg;
+$border-radius: $radius-md;
+
+// 2. Import Compiled Bootstrap CSS (Fixes Turbopack SCSS module resolution)
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+// 3. Custom Modules
+@import './typography';
+@import './buttons';
+@import './inputs';

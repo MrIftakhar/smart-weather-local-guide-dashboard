@@ -1,0 +1,18 @@
+@import './variables';
+
+.font-headline {
+  font-family: $font-headline;
+}
+
+.font-body {
+  font-family: $font-body;
+}
+
+.font-label {
+  font-family: $font-body;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: $color-text-muted;
+}

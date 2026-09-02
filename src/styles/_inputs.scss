@@ -1,0 +1,37 @@
+@import './variables';
+
+.input-search-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    color: $color-text-muted;
+    pointer-events: none;
+  }
+
+  .input-ae-search {
+    width: 100%;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $color-primary;
+    background-color: darken($color-neutral-bg, 2%);
+    border: 1px solid darken($color-neutral-bg, 8%);
+    border-radius: $radius-sm;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+
+    &::placeholder {
+      color: $color-text-muted;
+    }
+
+    &:focus {
+      border-color: $color-secondary;
+      background-color: $color-white;
+    }
+  }
+}
