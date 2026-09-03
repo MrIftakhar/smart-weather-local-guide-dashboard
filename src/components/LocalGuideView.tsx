@@ -19,6 +19,7 @@ export default function LocalGuideView({ weather }: LocalGuideViewProps) {
     ? [
         {
           name: 'The Metropolitan Museum of Art',
+          searchTerm: 'indoor museums',
           category: 'Art & Culture',
           dist: '0.8 miles away',
           badge: 'Indoor / Climate Controlled',
@@ -27,6 +28,7 @@ export default function LocalGuideView({ weather }: LocalGuideViewProps) {
         },
         {
           name: 'Central Library Atrium',
+          searchTerm: 'libraries and cafes',
           category: 'Cozy Reading',
           dist: '1.2 miles away',
           badge: 'Indoor Quiet Space',
@@ -37,6 +39,7 @@ export default function LocalGuideView({ weather }: LocalGuideViewProps) {
     : [
         {
           name: 'Skyline Terrace & Garden',
+          searchTerm: 'rooftop restaurants and terraces',
           category: 'Dining & Views',
           dist: '0.5 miles away',
           badge: 'Outdoor Scenic Spot',
@@ -45,6 +48,7 @@ export default function LocalGuideView({ weather }: LocalGuideViewProps) {
         },
         {
           name: 'Botanical Promenade',
+          searchTerm: 'botanical gardens and parks',
           category: 'Outdoor Adventure',
           dist: '1.8 miles away',
           badge: 'Great Sunshine Spot',
@@ -109,10 +113,15 @@ export default function LocalGuideView({ weather }: LocalGuideViewProps) {
               </div>
 
               <div className="p-4 pt-0">
-                <button className="btn-ae-outlined w-100 d-flex align-items-center justify-content-center gap-2">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.searchTerm} near ${current.city}`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-ae-outlined w-100 d-flex align-items-center justify-content-center gap-2 text-decoration-none"
+                >
                   <span>Explore Venue</span>
                   <ExternalLink size={14} />
-                </button>
+                </a>
               </div>
             </div>
           </div>

@@ -59,11 +59,19 @@ export default function ForecastView({ weather, unit }: ForecastViewProps) {
               <XAxis dataKey="day" stroke="#64748B" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#64748B" fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: '#1A1C1E',
-                  borderRadius: '12px',
-                  color: '#fff',
-                  border: 'none',
+                content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+
+                  return (
+                    <div style={{ backgroundColor: '#000', border: '1px solid #333', borderRadius: '8px', padding: '10px 12px', color: '#fff' }}>
+                      <div style={{ color: '#fff', fontWeight: 600, marginBottom: '4px' }}>{label}</div>
+                      {payload.map((entry) => (
+                        <div key={String(entry.dataKey)} style={{ color: '#fff', fontSize: '12px' }}>
+                          {entry.name}: {entry.value}°{unit}
+                        </div>
+                      ))}
+                    </div>
+                  );
                 }}
               />
               <Area type="monotone" dataKey="High" stroke="#D4AF37" strokeWidth={3} fillOpacity={1} fill="url(#highColor)" />
