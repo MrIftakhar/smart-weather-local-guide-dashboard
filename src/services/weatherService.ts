@@ -39,7 +39,7 @@ export async function fetchLocationWeather(query: string) {
     // Resolve the coordinate label separately; forecast data still uses the exact coordinates.
     try {
       const reverseRes = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=14&addressdetails=1`,
         { headers: { 'Accept-Language': 'en' } }
       );
       const reverseData = await reverseRes.json();
