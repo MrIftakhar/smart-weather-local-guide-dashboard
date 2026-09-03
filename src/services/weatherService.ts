@@ -2,24 +2,26 @@
 
 export async function fetchLocationWeather(query: string) {
   // Initialize variables safely to satisfy TypeScript assignment checks
-  let latitude: number = 0;
-  let longitude: number = 0;
+  let latitude: number | null = null;
+  let longitude: number | null = null;
   let name: string = 'Current Location';
   let country: string = '';
 
   // Check if query is passed as coordinates (e.g. "23.81,90.41")
-  if (query.includes(',')) {
-    const parts = query.split(',');
-    if (!isNaN(Number(parts[0])) && !isNaN(Number(parts[1]))) {
-      latitude = Number(parts[0]);
-      longitude = Number(parts[1]);
+  const coordinateMatch = query.trim().match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
+  if (coordinateMatch) {
+    const parsedLatitude = Number(coordinateMatch[1]);
+    const parsedLongitude = Number(coordinateMatch[2]);
+    if (parsedLatitude >= -90 && parsedLatitude <= 90 && parsedLongitude >= -180 && parsedLongitude <= 180) {
+      latitude = parsedLatitude;
+      longitude = parsedLongitude;
       name = "Current Location";
       country = "";
     }
   }
 
   // If not coordinates or coordinates were invalid, perform name geocoding search
-  if (!latitude || !longitude) {
+  if (latitude === null || longitude === null) {
     const cleanQuery = query.split(',')[0].trim();
     const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cleanQuery)}&count=1&format=json`);
     const geoData = await geoRes.json();
@@ -33,6 +35,28 @@ export async function fetchLocationWeather(query: string) {
     longitude = loc.longitude;
     name = loc.name;
     country = loc.country || '';
+  } else {
+    // Resolve the coordinate label separately; forecast data still uses the exact coordinates.
+    try {
+      const reverseRes = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      const reverseData = await reverseRes.json();
+      const address = reverseData.address || {};
+      const subarea = address.suburb || address.neighbourhood || address.city_district || address.town || address.village || '';
+      const city = address.city || address.municipality || address.county || address.state_district || '';
+      const locationParts = [subarea, city, address.country || country].filter(
+        (value, index, parts) => value && parts.indexOf(value) === index
+      );
+
+      if (locationParts.length > 0) {
+        name = locationParts.slice(0, -1).join(', ') || name;
+        country = locationParts[locationParts.length - 1] || country;
+      }
+    } catch {
+      // Weather remains available if reverse geocoding is unavailable.
+    }
   }
 
   // Fetch forecast data using the resolved coordinates

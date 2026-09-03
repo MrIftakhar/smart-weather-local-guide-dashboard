@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import DashboardView from '@/components/DashboardView';
 import { fetchLocationWeather } from '@/services/weatherService';
-import { Search, Moon, Sun, MapPin, Calendar, LayoutDashboard, Compass, Shirt, Loader2 } from 'lucide-react';
+import { Search, Moon, Sun, MapPin, Calendar, LayoutDashboard, Compass, Shirt, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Page() {
   const [weather, setWeather] = useState<any>(null);
@@ -13,6 +13,7 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [unit, setUnit] = useState<'C' | 'F'>('C');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -97,38 +98,32 @@ export default function Page() {
   };
 
   const handleCurrentLocation = () => {
-    if (navigator.geolocation) {
-      setLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          try {
-            const query = `${latitude},${longitude}`;
-            const data = await fetchLocationWeather(query);
-            setWeather(data);
-            if (data?.current?.city) {
-              setSearchTerm(data.current.city);
-            }
-            localStorage.setItem('lastWeatherQuery', query);
-          } catch (err) {
-            alert('Unable to fetch precise location weather.');
-          } finally {
-            setLoading(false);
-          }
-        },
-        () => {
-          setLoading(false);
-          alert('Geolocation permission denied.');
-        }
-      );
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by this browser.');
+      return;
     }
+
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const query = `${position.coords.latitude},${position.coords.longitude}`;
+        setSearchTerm('Current Location');
+        loadWeather(query);
+      },
+      () => {
+        setLoading(false);
+        alert('Location access was denied. Please allow location access and try again.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   return (
-    <div className={`d-flex min-vh-100 ${isDarkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`} style={{ transition: 'background 0.3s ease' }}>
+    <div className={`weather-app d-flex min-vh-100 ${isDarkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`} style={{ transition: 'background 0.3s ease' }}>
       
       {/* Left Sidebar Navigation Icons */}
-      <aside className={`d-flex flex-column align-items-center py-4 border-end gap-4 ${isDarkMode ? 'bg-black border-secondary' : 'bg-white'}`} style={{ width: '70px', minHeight: '100vh', position: 'sticky', top: 0, zIndex: 10, flexShrink: 0 }}>
+      {isSidebarOpen && <div className="weather-sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} />}
+      <aside className={`weather-sidebar d-flex flex-column align-items-center py-4 border-end gap-4 ${isSidebarOpen ? 'is-open' : ''} ${isDarkMode ? 'bg-black border-secondary' : 'bg-white'}`} style={{ width: '70px', minHeight: '100vh', position: 'sticky', top: 0, zIndex: 10, flexShrink: 0 }}>
         <div className="rounded-circle bg-dark text-white p-2 d-flex align-items-center justify-content-center shadow-sm" style={{ width: '40px', height: '40px' }}>
           <MapPin size={20} />
         </div>
@@ -141,16 +136,26 @@ export default function Page() {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-grow-1 d-flex flex-column align-items-center">
+      <div className="weather-content flex-grow-1 d-flex flex-column align-items-center">
         
         {/* Inner Wrapper constrained to 1440px max-width */}
         <div className="w-100 d-flex flex-column" style={{ maxWidth: '1440px' }}>
 
           {/* Top Header Bar */}
-          <header className={`px-4 py-3 border-bottom d-flex justify-content-between align-items-center position-relative ${isDarkMode ? 'bg-black border-secondary' : 'bg-white'}`} style={{ zIndex: 1050 }}>
+          <header className={`weather-header px-4 py-3 border-bottom d-flex justify-content-between align-items-center position-relative ${isDarkMode ? 'bg-black border-secondary' : 'bg-white'}`} style={{ zIndex: 1050 }}>
+
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="weather-sidebar-toggle btn btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3"
+              title={isSidebarOpen ? 'Close navigation' : 'Open navigation'}
+              aria-label={isSidebarOpen ? 'Close navigation' : 'Open navigation'}
+            >
+              {isSidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+            </button>
             
             {/* Search Bar & Autocomplete Dropdown */}
-            <div className="position-relative" style={{ width: '320px' }} ref={searchRef}>
+            <div className="weather-search position-relative" style={{ width: '320px' }} ref={searchRef}>
               <form onSubmit={handleSearchSubmit} className="d-flex align-items-center gap-2">
                 <div className="input-group rounded-pill overflow-hidden border shadow-sm bg-light w-100">
                   <span className="input-group-text bg-transparent border-0 ps-3">
@@ -203,7 +208,7 @@ export default function Page() {
             </div>
 
             {/* Right Controls: Night-to-Day Mode & Unit Toggle */}
-            <div className="d-flex align-items-center gap-3">
+            <div className="weather-controls d-flex align-items-center gap-3">
               {/* Night / Day Mode Toggle */}
               <button 
                 className={`btn btn-sm rounded-circle p-2 border shadow-sm ${isDarkMode ? 'btn-dark text-warning' : 'btn-light text-dark'}`}
@@ -236,7 +241,7 @@ export default function Page() {
           </header>
 
           {/* Dashboard View Component Container */}
-          <main className="p-4 flex-grow-1 w-100">
+          <main className="weather-main p-4 flex-grow-1 w-100">
             <DashboardView weather={weather} unit={unit} isDarkMode={isDarkMode} />
           </main>
 

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { WeatherData } from '@/types/weather';
-import { Sun, Wind, Droplets, ShieldAlert, Clock, Calendar, CloudRain, MapPin, Loader2 } from 'lucide-react';
+import { Sun, Wind, Droplets, ShieldAlert, Clock, Calendar, CloudRain, MapPin, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface DashboardViewProps {
   unit: 'C' | 'F';
@@ -17,6 +17,17 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
   const [isLoading, setIsLoading] = useState(!parentWeather);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [animateBars, setAnimateBars] = useState(false);
+
+  // Refs for sliding containers
+  const forecastScrollRef = useRef<HTMLDivElement>(null);
+  const hourlyScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollContainer = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
+    if (ref.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      ref.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -159,6 +170,9 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
     transition: 'background-color 0.3s ease, border-color 0.3s ease'
   };
 
+  // Muted text color helper for sub-labels depending on theme
+  const mutedTextColor = isDarkMode ? 'text-white-50' : 'text-muted';
+
   return (
     <div className="d-flex flex-column gap-4 w-100">
       <style jsx global>{`
@@ -214,7 +228,7 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
           )}
         </div>
 
-        <div className="d-flex justify-content-between align-items-start position-relative z-1">
+        <div className="hero-top d-flex justify-content-between align-items-start position-relative z-1">
           <div>
             <span className="font-label text-white-50 d-flex align-items-center gap-1 mb-1">
               <MapPin size={13} /> CURRENT LOCATION WEATHER
@@ -241,7 +255,7 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
           </span>
         </div>
 
-        <div className="d-flex justify-content-between align-items-end position-relative z-1 mt-4">
+        <div className="hero-bottom d-flex justify-content-between align-items-end position-relative z-1 mt-4">
           <div>
             <h1 className="display-1 fw-bold mb-0 font-headline">{displayTemp(current.temperature)}</h1>
             <p className="mb-0 font-body text-white-50">
@@ -482,8 +496,30 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
 
       {/* 3. 7-Day Forecast Overview */}
       <div className="p-4 rounded-4 border shadow-sm w-100" style={cardStyle}>
-        <h5 className="font-headline mb-3">7-Day Forecast Overview</h5>
-        <div className="d-flex flex-row gap-3 overflow-x-auto pb-2 w-100 hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory' }}>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h5 className="font-headline mb-0" style={{ color: isDarkMode ? '#ffffff' : '#212529' }}>7-Day Forecast Overview</h5>
+          <div className="d-none d-md-flex gap-2">
+            <button 
+              onClick={() => scrollContainer(forecastScrollRef, 'left')} 
+              className="btn btn-sm btn-outline-secondary rounded-circle p-1 d-flex align-items-center justify-content-center"
+              style={{ width: '32px', height: '32px' }}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button 
+              onClick={() => scrollContainer(forecastScrollRef, 'right')} 
+              className="btn btn-sm btn-outline-secondary rounded-circle p-1 d-flex align-items-center justify-content-center"
+              style={{ width: '32px', height: '32px' }}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+        <div 
+          ref={forecastScrollRef}
+          className="d-flex flex-row gap-3 overflow-x-auto pb-2 w-100 hide-scrollbar" 
+          style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory', scrollBehavior: 'smooth' }}
+        >
           {forecast.map((day, idx) => {
             const isSelected = selectedDayIndex === idx;
             return (
@@ -497,16 +533,17 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
                   cursor: 'pointer',
                   scrollSnapAlign: 'start',
                   backgroundColor: isSelected ? (isDarkMode ? '#222' : '#f8f9fa') : (isDarkMode ? '#141414' : '#ffffff'),
-                  borderColor: isSelected ? '#0d6efd' : (isDarkMode ? '#262626' : '#dee2e6')
+                  borderColor: isSelected ? '#0d6efd' : (isDarkMode ? '#262626' : '#dee2e6'),
+                  color: isDarkMode ? '#ffffff' : '#212529'
                 }}
               >
-                <span className="font-label text-muted d-block">{day.day}</span>
-                <span className="small text-muted d-block" style={{ fontSize: '11px' }}>{day.dateFormatted}</span>
+                <span className={`font-label ${mutedTextColor} d-block`}>{day.day}</span>
+                <span className={`small ${mutedTextColor} d-block`} style={{ fontSize: '11px' }}>{day.dateFormatted}</span>
                 <div className="my-2 text-primary">
                   {day.condition.includes('Rain') ? <CloudRain size={22} className="text-info" /> : <Sun size={22} className="text-warning" />}
                 </div>
                 <div className="fw-bold font-headline">{displayTemp(day.high)}</div>
-                <div className="text-muted small font-body">{displayTemp(day.low)}</div>
+                <div className={`${mutedTextColor} small font-body`}>{displayTemp(day.low)}</div>
               </div>
             );
           })}
@@ -516,12 +553,32 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
       {/* 4. 24-Hour Overview */}
       <div className="p-4 rounded-4 border shadow-sm w-100" style={cardStyle}>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5 className="font-headline mb-0">24-Hour Overview ({activeDayData.day} - {activeDayData.dateFormatted})</h5>
+          <h5 className="font-headline mb-0" style={{ color: isDarkMode ? '#ffffff' : '#212529' }}>24-Hour Overview ({activeDayData.day} - {activeDayData.dateFormatted})</h5>
+          <div className="d-none d-md-flex gap-2">
+            <button 
+              onClick={() => scrollContainer(hourlyScrollRef, 'left')} 
+              className="btn btn-sm btn-outline-secondary rounded-circle p-1 d-flex align-items-center justify-content-center"
+              style={{ width: '32px', height: '32px' }}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button 
+              onClick={() => scrollContainer(hourlyScrollRef, 'right')} 
+              className="btn btn-sm btn-outline-secondary rounded-circle p-1 d-flex align-items-center justify-content-center"
+              style={{ width: '32px', height: '32px' }}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
-        <div className="d-flex flex-row gap-4 overflow-x-auto pb-2 w-100 hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory' }}>
+        <div 
+          ref={hourlyScrollRef}
+          className="d-flex flex-row gap-4 overflow-x-auto pb-2 w-100 hide-scrollbar" 
+          style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory', scrollBehavior: 'smooth' }}
+        >
           {activeDayData.hourly?.map((hr, idx) => (
-            <div key={idx} className="d-flex flex-column align-items-center flex-shrink-0 text-center" style={{ minWidth: '75px', scrollSnapAlign: 'start' }}>
-              <span className="font-label text-muted mb-2">{hr.time}</span>
+            <div key={idx} className="d-flex flex-column align-items-center flex-shrink-0 text-center" style={{ minWidth: '75px', scrollSnapAlign: 'start', color: isDarkMode ? '#ffffff' : '#212529' }}>
+              <span className={`font-label ${mutedTextColor} mb-2`}>{hr.time}</span>
               <div className="my-1">
                 {hr.condition.includes('Rain') ? <CloudRain size={20} className="text-info" /> : <Sun size={20} className="text-warning" />}
               </div>
