@@ -1,4 +1,5 @@
-@import './variables';
+@use 'sass:color';
+@use './variables' as *;
 
 .btn-ae {
   display: inline-flex;
@@ -28,7 +29,7 @@
   color: $color-white;
 
   &:hover {
-    background-color: lighten($color-primary, 10%);
+    background-color: color.adjust($color-primary, $lightness: 10%);
     color: $color-white;
   }
 }
@@ -36,11 +37,11 @@
 // 2. Secondary (Light Surface)
 .btn-ae-secondary {
   @extend .btn-ae;
-  background-color: darken($color-neutral-bg, 3%);
+  background-color: color.adjust($color-neutral-bg, $lightness: -3%);
   color: $color-primary;
 
   &:hover {
-    background-color: darken($color-neutral-bg, 8%);
+    background-color: color.adjust($color-neutral-bg, $lightness: -8%);
   }
 }
 
@@ -51,7 +52,7 @@
   color: $color-white;
 
   &:hover {
-    background-color: lighten($color-dark-surface, 8%);
+    background-color: color.adjust($color-dark-surface, $lightness: 8%);
     color: $color-white;
   }
 }
@@ -101,7 +102,7 @@
   border: none;
 
   &:hover {
-    background-color: darken($color-tertiary, 5%);
+    background-color: color.adjust($color-tertiary, $lightness: -5%);
   }
 }
 /* Mobile Sidebar Drawer Styling */

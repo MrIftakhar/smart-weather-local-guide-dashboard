@@ -1,5 +1,9 @@
+@use './variables' as *;
+@use './typography';
+@use './buttons';
+@use './inputs';
+
 // 1. Custom Variables
-@import './variables';
 
 $primary: $color-primary;
 $secondary: $color-secondary;
@@ -12,8 +16,3 @@ $border-radius: $radius-md;
 
 // 2. Import Compiled Bootstrap CSS (Fixes Turbopack SCSS module resolution)
 @import 'bootstrap/dist/css/bootstrap.min.css';
-
-// 3. Custom Modules
-@import './typography';
-@import './buttons';
-@import './inputs';

@@ -102,7 +102,7 @@ export default function AppLayout({
         style={{ width: '80px', height: '100vh' }}
       >
         <a href="/" className="btn-ae-icon icon-dark mb-4 fw-bold p-1" aria-label="Go to dashboard home">
-          <img src="/images/logo.png" alt="Weather dashboard logo" className="img-fluid" />
+          <img src="/images/logo.png" alt="Weather dashboard logo" className="weather-logo-image" />
         </a>
 
         <nav className="d-flex flex-column gap-3 w-100 align-items-center">

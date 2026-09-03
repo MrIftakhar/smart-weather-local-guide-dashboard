@@ -1,106 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap");
 @import 'bootstrap/dist/css/bootstrap.min.css';
-@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap");
-:root {
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --text-primary: #1a1c1e;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --hero-bg: linear-gradient(135deg, #1a1c1e 0%, #4d6b8c 100%);
-}
-
-[data-theme=dark] {
-  --bg-main: #0f172a;
-  --bg-card: #1e293b;
-  --text-primary: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: #334155;
-  --hero-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-/* Global Body & Layout Styling */
-body,
-main,
-header,
-aside {
-  background-color: var(--bg-main) !important;
-  color: var(--text-primary) !important;
-  transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-/* Outer headings, paragraphs, and generic spans outside light containers */
-body h1, body h2, body h3, body h4, body h5, body h6,
-body p, body span:not(.badge):not(.btn) {
-  color: var(--text-primary);
-}
-
-/* Specific Theme Card Rules */
-.theme-card {
-  background-color: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-color) !important;
-}
-.theme-card h1, .theme-card h2, .theme-card h3, .theme-card h4, .theme-card h5, .theme-card h6, .theme-card p, .theme-card span:not(.badge):not(.text-muted) {
-  color: var(--text-primary) !important;
-}
-
-/* Muted Text Helper */
-.text-muted,
-.font-label,
-.theme-text-muted {
-  color: var(--text-muted) !important;
-}
-
-/* Safeguard: Elements with forced light backgrounds MUST retain dark text */
-.bg-white,
-.bg-light,
-.btn-light {
-  color: #1a1c1e !important;
-}
-.bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4, .bg-white h5, .bg-white h6, .bg-white p, .bg-white span,
-.bg-light h1,
-.bg-light h2,
-.bg-light h3,
-.bg-light h4,
-.bg-light h5,
-.bg-light h6,
-.bg-light p,
-.bg-light span,
-.btn-light h1,
-.btn-light h2,
-.btn-light h3,
-.btn-light h4,
-.btn-light h5,
-.btn-light h6,
-.btn-light p,
-.btn-light span {
-  color: #1a1c1e !important;
-}
-
-/* Hero Card Explicit Overrides (Always keep text white regardless of theme mode) */
-.hero-weather-card {
-  background: var(--hero-bg) !important;
-  color: #ffffff !important;
-}
-.hero-weather-card h1, .hero-weather-card h2, .hero-weather-card h3, .hero-weather-card h4, .hero-weather-card h5, .hero-weather-card h6,
-.hero-weather-card .font-headline,
-.hero-weather-card .display-1,
-.hero-weather-card .display-5 {
-  color: #ffffff !important;
-}
-.hero-weather-card p,
-.hero-weather-card span,
-.hero-weather-card .font-body,
-.hero-weather-card .font-label {
-  color: rgba(255, 255, 255, 0.75) !important;
-}
-.hero-weather-card .badge {
-  color: #ffffff !important;
-}
-
 :root {
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
@@ -214,104 +113,6 @@ body p, body span:not(.badge):not(.btn) {
   font-size: 0.75rem;
   font-weight: 600;
   color: #64748B;
-}
-
-:root {
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --text-primary: #1a1c1e;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --hero-bg: linear-gradient(135deg, #1a1c1e 0%, #4d6b8c 100%);
-}
-
-[data-theme=dark] {
-  --bg-main: #0f172a;
-  --bg-card: #1e293b;
-  --text-primary: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: #334155;
-  --hero-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-/* Global Body & Layout Styling */
-body,
-main,
-header,
-aside {
-  background-color: var(--bg-main) !important;
-  color: var(--text-primary) !important;
-  transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-/* Outer headings, paragraphs, and generic spans outside light containers */
-body h1, body h2, body h3, body h4, body h5, body h6,
-body p, body span:not(.badge):not(.btn) {
-  color: var(--text-primary);
-}
-
-/* Specific Theme Card Rules */
-.theme-card {
-  background-color: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-color) !important;
-}
-.theme-card h1, .theme-card h2, .theme-card h3, .theme-card h4, .theme-card h5, .theme-card h6, .theme-card p, .theme-card span:not(.badge):not(.text-muted) {
-  color: var(--text-primary) !important;
-}
-
-/* Muted Text Helper */
-.text-muted,
-.font-label,
-.theme-text-muted {
-  color: var(--text-muted) !important;
-}
-
-/* Safeguard: Elements with forced light backgrounds MUST retain dark text */
-.bg-white,
-.bg-light,
-.btn-light {
-  color: #1a1c1e !important;
-}
-.bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4, .bg-white h5, .bg-white h6, .bg-white p, .bg-white span,
-.bg-light h1,
-.bg-light h2,
-.bg-light h3,
-.bg-light h4,
-.bg-light h5,
-.bg-light h6,
-.bg-light p,
-.bg-light span,
-.btn-light h1,
-.btn-light h2,
-.btn-light h3,
-.btn-light h4,
-.btn-light h5,
-.btn-light h6,
-.btn-light p,
-.btn-light span {
-  color: #1a1c1e !important;
-}
-
-/* Hero Card Explicit Overrides (Always keep text white regardless of theme mode) */
-.hero-weather-card {
-  background: var(--hero-bg) !important;
-  color: #ffffff !important;
-}
-.hero-weather-card h1, .hero-weather-card h2, .hero-weather-card h3, .hero-weather-card h4, .hero-weather-card h5, .hero-weather-card h6,
-.hero-weather-card .font-headline,
-.hero-weather-card .display-1,
-.hero-weather-card .display-5 {
-  color: #ffffff !important;
-}
-.hero-weather-card p,
-.hero-weather-card span,
-.hero-weather-card .font-body,
-.hero-weather-card .font-label {
-  color: rgba(255, 255, 255, 0.75) !important;
-}
-.hero-weather-card .badge {
-  color: #ffffff !important;
 }
 
 .btn-ae, .btn-ae-outlined, .btn-ae-inverted, .btn-ae-secondary, .btn-ae-primary {
@@ -435,104 +236,6 @@ body p, body span:not(.badge):not(.btn) {
     z-index: 1040;
   }
 }
-:root {
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --text-primary: #1a1c1e;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --hero-bg: linear-gradient(135deg, #1a1c1e 0%, #4d6b8c 100%);
-}
-
-[data-theme=dark] {
-  --bg-main: #0f172a;
-  --bg-card: #1e293b;
-  --text-primary: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: #334155;
-  --hero-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-/* Global Body & Layout Styling */
-body,
-main,
-header,
-aside {
-  background-color: var(--bg-main) !important;
-  color: var(--text-primary) !important;
-  transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-/* Outer headings, paragraphs, and generic spans outside light containers */
-body h1, body h2, body h3, body h4, body h5, body h6,
-body p, body span:not(.badge):not(.btn) {
-  color: var(--text-primary);
-}
-
-/* Specific Theme Card Rules */
-.theme-card {
-  background-color: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-color) !important;
-}
-.theme-card h1, .theme-card h2, .theme-card h3, .theme-card h4, .theme-card h5, .theme-card h6, .theme-card p, .theme-card span:not(.badge):not(.text-muted) {
-  color: var(--text-primary) !important;
-}
-
-/* Muted Text Helper */
-.text-muted,
-.font-label,
-.theme-text-muted {
-  color: var(--text-muted) !important;
-}
-
-/* Safeguard: Elements with forced light backgrounds MUST retain dark text */
-.bg-white,
-.bg-light,
-.btn-light {
-  color: #1a1c1e !important;
-}
-.bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4, .bg-white h5, .bg-white h6, .bg-white p, .bg-white span,
-.bg-light h1,
-.bg-light h2,
-.bg-light h3,
-.bg-light h4,
-.bg-light h5,
-.bg-light h6,
-.bg-light p,
-.bg-light span,
-.btn-light h1,
-.btn-light h2,
-.btn-light h3,
-.btn-light h4,
-.btn-light h5,
-.btn-light h6,
-.btn-light p,
-.btn-light span {
-  color: #1a1c1e !important;
-}
-
-/* Hero Card Explicit Overrides (Always keep text white regardless of theme mode) */
-.hero-weather-card {
-  background: var(--hero-bg) !important;
-  color: #ffffff !important;
-}
-.hero-weather-card h1, .hero-weather-card h2, .hero-weather-card h3, .hero-weather-card h4, .hero-weather-card h5, .hero-weather-card h6,
-.hero-weather-card .font-headline,
-.hero-weather-card .display-1,
-.hero-weather-card .display-5 {
-  color: #ffffff !important;
-}
-.hero-weather-card p,
-.hero-weather-card span,
-.hero-weather-card .font-body,
-.hero-weather-card .font-label {
-  color: rgba(255, 255, 255, 0.75) !important;
-}
-.hero-weather-card .badge {
-  color: #ffffff !important;
-}
-
 .input-search-group {
   position: relative;
   display: flex;
@@ -581,6 +284,20 @@ body {
 .weather-sidebar-toggle,
 .weather-sidebar-backdrop {
   display: none !important;
+}
+
+.weather-brand,
+.weather-sidebar .btn-ae-icon:has(.weather-logo-image) {
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.weather-logo-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 @media (max-width: 767.98px) {

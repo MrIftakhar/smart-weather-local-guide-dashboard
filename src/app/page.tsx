@@ -140,7 +140,7 @@ export default function Page() {
           aria-label="Go to dashboard home"
           style={{ width: '40px', height: '40px' }}
         >
-          <img src="/images/logo.png" alt="Weather dashboard logo" className="img-fluid" />
+          <img src="/images/logo.png" alt="Weather dashboard logo" className="weather-logo-image" />
         </a>
         <div className="d-flex flex-column gap-3 mt-3 text-muted">
           <button onClick={() => handleTabChange('dashboard')} className={`btn btn-link p-2 ${activeTab === 'dashboard' ? 'text-primary' : 'text-muted'}`} title="Dashboard" aria-label="Dashboard"><LayoutDashboard size={22} /></button>
