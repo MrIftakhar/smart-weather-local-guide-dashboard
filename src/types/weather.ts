@@ -10,6 +10,8 @@ export interface CurrentWeather {
   windSpeed: number;
   uvIndex: number;
   airQuality: number;
+  precipitation?: number;
+  apparentTemperature?: number;
   localTime?: string;
   localDate?: string;
 }

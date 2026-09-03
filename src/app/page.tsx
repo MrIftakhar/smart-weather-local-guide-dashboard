@@ -133,9 +133,15 @@ export default function Page() {
       {/* Left Sidebar Navigation Icons */}
       {isSidebarOpen && <div className="weather-sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} />}
       <aside className={`weather-sidebar d-flex flex-column align-items-center py-4 border-end gap-4 ${isSidebarOpen ? 'is-open' : ''} ${isDarkMode ? 'bg-black border-secondary' : 'bg-white'}`} style={{ width: '70px', minHeight: '100vh', position: 'sticky', top: 0, zIndex: 10, flexShrink: 0 }}>
-        <div className="weather-brand rounded-circle bg-dark p-1 d-flex align-items-center justify-content-center shadow-sm" style={{ width: '40px', height: '40px' }}>
+        <a
+          href="/"
+          onClick={() => setActiveTab('dashboard')}
+          className="weather-brand rounded-circle bg-dark p-1 d-flex align-items-center justify-content-center shadow-sm"
+          aria-label="Go to dashboard home"
+          style={{ width: '40px', height: '40px' }}
+        >
           <img src="/images/logo.png" alt="Weather dashboard logo" className="img-fluid" />
-        </div>
+        </a>
         <div className="d-flex flex-column gap-3 mt-3 text-muted">
           <button onClick={() => handleTabChange('dashboard')} className={`btn btn-link p-2 ${activeTab === 'dashboard' ? 'text-primary' : 'text-muted'}`} title="Dashboard" aria-label="Dashboard"><LayoutDashboard size={22} /></button>
           <button onClick={() => handleTabChange('forecast')} className={`btn btn-link p-2 ${activeTab === 'forecast' ? 'text-primary' : 'text-muted'}`} title="Forecast" aria-label="Forecast"><Calendar size={22} /></button>

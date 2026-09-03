@@ -12,36 +12,65 @@ interface AssistantViewProps {
 export default function AssistantView({ weather, unit }: AssistantViewProps) {
   if (!weather) return null;
 
-  const tempInC = weather.current.temperature;
-  const isRainy = weather.current.condition.toLowerCase().includes('rain') || weather.current.humidity > 75;
+  const { current } = weather;
+  const tempInC = current.apparentTemperature ?? current.temperature;
+  const condition = current.condition.toLowerCase();
+  const isWet = ['rain', 'shower', 'thunderstorm', 'snow'].some((weatherType) => condition.includes(weatherType)) || (current.precipitation ?? 0) > 0;
+  const isWindy = current.windSpeed >= 25;
+  const isHumid = current.humidity >= 75;
 
-  // Dynamic wardrobe suggestions logic
   const getOutfits = () => {
-    if (tempInC < 10) {
-      return {
-        outerwear: 'Heavy Wool Coat & Scarf',
-        layers: 'Thermal Knit Sweater',
-        footwear: 'Waterproof Boots',
-        accessories: 'Beanie & Gloves',
-      };
-    } else if (tempInC < 20) {
-      return {
-        outerwear: 'Light Trench Coat or Denim Jacket',
-        layers: 'Cotton Long-Sleeve Shirt',
-        footwear: 'Leather Sneakers',
-        accessories: 'Sunglasses & Light Scarf',
-      };
-    } else {
-      return {
-        outerwear: 'None Required',
-        layers: 'Breathable Linen Shirt & Shorts',
-        footwear: 'Canvas Shoes or Sandals',
-        accessories: 'UV Polarized Sunglasses & Cap',
-      };
-    }
+    const outerwear = isWet
+      ? 'Water-resistant jacket or rain shell'
+      : tempInC < 10
+        ? 'Heavy coat with a warm scarf'
+        : tempInC < 20
+          ? 'Light jacket or cardigan'
+          : isWindy
+            ? 'Light windbreaker'
+            : 'No outer layer needed';
+    const layers = tempInC < 10
+      ? 'Thermal base layer and knit sweater'
+      : tempInC < 20
+        ? 'Cotton long-sleeve shirt'
+        : isHumid
+          ? 'Loose, moisture-wicking shirt'
+          : 'Breathable linen or cotton shirt';
+    const footwear = isWet
+      ? 'Waterproof shoes or boots'
+      : tempInC >= 25
+        ? 'Breathable sneakers or sandals'
+        : 'Closed-toe walking shoes';
+    const accessories = current.uvIndex >= 6
+      ? 'Sunglasses, hat, and SPF protection'
+      : isWindy
+        ? 'Secure hat and light scarf'
+        : 'Light everyday accessories';
+
+    return {
+      title: isWet
+        ? 'Rain-Ready Outdoor Protection'
+        : tempInC < 10
+          ? 'Layered Cold Weather Protection'
+          : tempInC < 20
+            ? 'Comfortable Mid-Weather Layers'
+            : 'Lightweight Breathable Apparel',
+      outerwear,
+      layers,
+      footwear,
+      accessories,
+    };
   };
 
   const outfit = getOutfits();
+  const temperatureLabel = unit === 'F' ? `${Math.round((tempInC * 9) / 5 + 32)}°F` : `${Math.round(tempInC)}°C`;
+
+  const getComfortSummary = () => {
+    if (isWet) return 'Rain and precipitation are driving today’s waterproof recommendations.';
+    if (isWindy) return `Wind is currently ${current.windSpeed} km/h, so a secure outer layer is recommended.`;
+    if (isHumid) return `Humidity is ${current.humidity}%, so breathable moisture-wicking fabrics are recommended.`;
+    return 'Current conditions are comfortable for lightweight everyday clothing.';
+  };
 
   return (
     <div className="d-flex flex-column gap-4">
@@ -64,10 +93,10 @@ export default function AssistantView({ weather, unit }: AssistantViewProps) {
               </div>
 
               <h3 className="font-headline display-6 mb-3">
-                {tempInC < 15 ? 'Layered Cold Weather Protection' : 'Lightweight Breathable Apparel'}
+                {outfit.title}
               </h3>
               <p className="font-body text-muted mb-4">
-                Based on current temperature of {unit === 'F' ? `${Math.round((tempInC * 9) / 5 + 32)}°F` : `${tempInC}°C`} and humidity of {weather.current.humidity}%.
+                {getComfortSummary()} Current feels-like temperature is {temperatureLabel} with {current.condition.toLowerCase()} conditions.
               </p>
 
               <div className="row g-3">
@@ -116,18 +145,20 @@ export default function AssistantView({ weather, unit }: AssistantViewProps) {
               </div>
               <div>
                 <div className="font-body fw-bold small">UV Protection</div>
-                <div className="text-muted extra-small">UV Index is currently {weather.current.uvIndex}</div>
+                <div className="text-muted extra-small">
+                  {current.uvIndex >= 6 ? 'High UV: use SPF, sunglasses, and a hat.' : `UV index is ${current.uvIndex}; basic sun protection is advised.`}
+                </div>
               </div>
             </div>
 
             <div className="d-flex align-items-center gap-3 p-3 rounded-3 bg-light">
-              <div className={`btn-ae-icon ${isRainy ? 'icon-danger' : 'icon-dark'}`}>
+              <div className={`btn-ae-icon ${isWet ? 'icon-danger' : 'icon-dark'}`}>
                 <Umbrella size={18} />
               </div>
               <div>
                 <div className="font-body fw-bold small">Compact Umbrella</div>
                 <div className="text-muted extra-small">
-                  {isRainy ? 'High chance of precipitation' : 'Unlikely needed today'}
+                  {isWet ? 'Precipitation is present; keep it with you.' : 'No current precipitation; optional carry.'}
                 </div>
               </div>
             </div>
@@ -138,7 +169,9 @@ export default function AssistantView({ weather, unit }: AssistantViewProps) {
               </div>
               <div>
                 <div className="font-body fw-bold small">Fabric Care</div>
-                <div className="text-muted extra-small">Choose breathable cotton & linen blend</div>
+                <div className="text-muted extra-small">
+                  {isWet ? 'Choose quick-dry layers and protect shoes from water.' : isHumid ? 'Choose breathable moisture-wicking fabrics.' : 'Choose breathable cotton and linen blends.'}
+                </div>
               </div>
             </div>
           </div>

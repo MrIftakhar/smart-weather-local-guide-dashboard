@@ -61,7 +61,7 @@ export async function fetchLocationWeather(query: string) {
 
   // Fetch forecast data using the resolved coordinates
   const weatherRes = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=temperature_2m,weather_code&timezone=auto&cacheBust=${Date.now()}`,
+    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=temperature_2m,weather_code&timezone=auto&cacheBust=${Date.now()}`,
     { cache: 'no-store' }
   );
   const weatherData = await weatherRes.json();
@@ -106,8 +106,10 @@ export async function fetchLocationWeather(query: string) {
       condition: currentCondition,
       humidity: weatherData.current.relative_humidity_2m,
       windSpeed: Math.round(weatherData.current.wind_speed_10m),
-      uvIndex: 4,
+      uvIndex: Math.round(weatherData.current.uv_index ?? 0),
       airQuality: 35,
+      precipitation: weatherData.current.precipitation ?? 0,
+      apparentTemperature: Math.round(weatherData.current.apparent_temperature ?? weatherData.current.temperature_2m),
       localDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       localTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     },
