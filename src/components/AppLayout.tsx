@@ -101,7 +101,9 @@ export default function AppLayout({
         } position-lg-relative`}
         style={{ width: '80px', height: '100vh' }}
       >
-        <div className="btn-ae-icon icon-dark mb-4 fw-bold">☁️</div>
+        <div className="btn-ae-icon icon-dark mb-4 fw-bold p-1">
+          <img src="/images/logo.png" alt="Weather dashboard logo" className="img-fluid" />
+        </div>
 
         <nav className="d-flex flex-column gap-3 w-100 align-items-center">
           {navItems.map((item) => {

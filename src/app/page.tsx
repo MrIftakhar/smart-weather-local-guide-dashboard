@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import DashboardView from '@/components/DashboardView';
+import ForecastView from '@/components/ForecastView';
+import LocalGuideView from '@/components/LocalGuideView';
+import AssistantView from '@/components/AssistantView';
 import { fetchLocationWeather } from '@/services/weatherService';
 import { Search, Moon, Sun, MapPin, Calendar, LayoutDashboard, Compass, Shirt, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -14,6 +17,7 @@ export default function Page() {
   const [unit, setUnit] = useState<'C' | 'F'>('C');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
   
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -118,20 +122,25 @@ export default function Page() {
     );
   };
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setIsSidebarOpen(false);
+  };
+
   return (
     <div className={`weather-app d-flex min-vh-100 ${isDarkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`} style={{ transition: 'background 0.3s ease' }}>
       
       {/* Left Sidebar Navigation Icons */}
       {isSidebarOpen && <div className="weather-sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} />}
       <aside className={`weather-sidebar d-flex flex-column align-items-center py-4 border-end gap-4 ${isSidebarOpen ? 'is-open' : ''} ${isDarkMode ? 'bg-black border-secondary' : 'bg-white'}`} style={{ width: '70px', minHeight: '100vh', position: 'sticky', top: 0, zIndex: 10, flexShrink: 0 }}>
-        <div className="rounded-circle bg-dark text-white p-2 d-flex align-items-center justify-content-center shadow-sm" style={{ width: '40px', height: '40px' }}>
-          <MapPin size={20} />
+        <div className="weather-brand rounded-circle bg-dark p-1 d-flex align-items-center justify-content-center shadow-sm" style={{ width: '40px', height: '40px' }}>
+          <img src="/images/logo.png" alt="Weather dashboard logo" className="img-fluid" />
         </div>
         <div className="d-flex flex-column gap-3 mt-3 text-muted">
-          <button className="btn btn-link text-primary p-2"><LayoutDashboard size={22} /></button>
-          <button className="btn btn-link text-muted p-2"><Calendar size={22} /></button>
-          <button className="btn btn-link text-muted p-2"><Compass size={22} /></button>
-          <button className="btn btn-link text-muted p-2"><Shirt size={22} /></button>
+          <button onClick={() => handleTabChange('dashboard')} className={`btn btn-link p-2 ${activeTab === 'dashboard' ? 'text-primary' : 'text-muted'}`} title="Dashboard" aria-label="Dashboard"><LayoutDashboard size={22} /></button>
+          <button onClick={() => handleTabChange('forecast')} className={`btn btn-link p-2 ${activeTab === 'forecast' ? 'text-primary' : 'text-muted'}`} title="Forecast" aria-label="Forecast"><Calendar size={22} /></button>
+          <button onClick={() => handleTabChange('guide')} className={`btn btn-link p-2 ${activeTab === 'guide' ? 'text-primary' : 'text-muted'}`} title="Local Guide" aria-label="Local Guide"><Compass size={22} /></button>
+          <button onClick={() => handleTabChange('assistant')} className={`btn btn-link p-2 ${activeTab === 'assistant' ? 'text-primary' : 'text-muted'}`} title="Wardrobe" aria-label="Wardrobe"><Shirt size={22} /></button>
         </div>
       </aside>
 
@@ -242,7 +251,10 @@ export default function Page() {
 
           {/* Dashboard View Component Container */}
           <main className="weather-main p-4 flex-grow-1 w-100">
-            <DashboardView weather={weather} unit={unit} isDarkMode={isDarkMode} />
+            {activeTab === 'dashboard' && <DashboardView weather={weather} unit={unit} isDarkMode={isDarkMode} />}
+            {activeTab === 'forecast' && <ForecastView weather={weather} unit={unit} />}
+            {activeTab === 'guide' && <LocalGuideView weather={weather} />}
+            {activeTab === 'assistant' && <AssistantView weather={weather} unit={unit} />}
           </main>
 
         </div>

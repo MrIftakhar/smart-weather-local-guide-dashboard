@@ -13,7 +13,7 @@ interface ForecastViewProps {
 export default function ForecastView({ weather, unit }: ForecastViewProps) {
   if (!weather) return null;
 
-  const { forecast } = weather;
+  const forecast = weather.forecast.slice(0, 5);
 
   // Temperature conversion helper
   const convertTemp = (celsius: number) => {

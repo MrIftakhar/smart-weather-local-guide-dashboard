@@ -61,7 +61,7 @@ export async function fetchLocationWeather(query: string) {
 
   // Fetch forecast data using the resolved coordinates
   const weatherRes = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto&cacheBust=${Date.now()}`,
+    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=temperature_2m,weather_code&timezone=auto&cacheBust=${Date.now()}`,
     { cache: 'no-store' }
   );
   const weatherData = await weatherRes.json();
@@ -88,6 +88,7 @@ export async function fetchLocationWeather(query: string) {
       high: Math.round(weatherData.daily.temperature_2m_max[idx]),
       low: Math.round(weatherData.daily.temperature_2m_min[idx]),
       condition: getWeatherCondition(weatherData.daily.weather_code[idx]),
+      pop: weatherData.daily.precipitation_probability_max[idx] ?? 0,
       hourly: weatherData.hourly.time.slice(idx * 24, (idx + 1) * 24).map((timeStr: string, hIdx: number) => ({
         time: new Date(timeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         temp: Math.round(weatherData.hourly.temperature_2m[idx * 24 + hIdx]),
