@@ -16,6 +16,14 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
   const [weather, setWeather] = useState<WeatherData | null>(parentWeather || null);
   const [isLoading, setIsLoading] = useState(!parentWeather);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [animateBars, setAnimateBars] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimateBars(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const fetchWeatherByCoords = useCallback(async (lat: number, lon: number) => {
     try {
@@ -156,6 +164,9 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
       <style jsx global>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .progress-bar {
+          transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
       `}</style>
 
       {/* 1. Hero Weather Card */}
@@ -175,22 +186,22 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
         <div className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
           {isRaining ? (
             <div className="w-100 h-100 position-relative">
-              {[...Array(35)].map((_, i) => (
+              {[...Array(45)].map((_, i) => (
                 <div
                   key={i}
                   className="realistic-raindrop"
                   style={{
                     left: `${Math.random() * 100}%`,
-                    top: `-${Math.random() * 50}px`,
+                    top: `-40px`,
                     animationDuration: `${0.4 + Math.random() * 0.4}s`,
                     animationDelay: `${Math.random() * 2}s`,
-                    opacity: 0.3 + Math.random() * 0.5,
+                    opacity: 0.3 + Math.random() * 0.6,
                   }}
                 />
               ))}
             </div>
           ) : isCloudy ? (
-            <div className="w-100 h-100 position-relative opacity-50">
+            <div className="w-100 h-100 position-relative">
               <div className="realistic-cloud cloud-alpha" />
               <div className="realistic-cloud cloud-beta" />
               <div className="realistic-cloud cloud-gamma" />
@@ -244,60 +255,134 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
         .realistic-raindrop {
           position: absolute;
           width: 1.5px;
-          height: 25px;
-          background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
-          transform: rotate(-10deg);
+          height: 30px;
+          background: linear-gradient(transparent, rgba(255, 255, 255, 0.85));
+          transform: rotate(-12deg);
           animation: realisticFall linear infinite;
         }
         @keyframes realisticFall {
-          0% { transform: translate(0, -40px) rotate(-10deg); }
-          100% { transform: translate(-30px, 320px) rotate(-10deg); }
+          0% { transform: translateY(-40px) rotate(-12deg); }
+          100% { transform: translateY(340px) rotate(-12deg); }
         }
 
         .realistic-cloud {
           position: absolute;
-          background: rgba(255, 255, 255, 0.25);
+          background: rgba(255, 255, 255, 0.22);
           backdrop-filter: blur(2px);
           border-radius: 100px;
           animation: cloudDrift linear infinite;
         }
-        .cloud-alpha { width: 160px; height: 45px; top: 15px; left: -160px; animation-duration: 25s; }
-        .cloud-beta { width: 220px; height: 60px; top: 70px; left: -220px; animation-duration: 38s; animation-delay: 4s; opacity: 0.15; }
-        .cloud-gamma { width: 130px; height: 35px; top: 40px; left: -130px; animation-duration: 18s; animation-delay: 9s; }
+        .cloud-alpha { width: 190px; height: 50px; top: 20px; left: -220px; animation-duration: 28s; }
+        .cloud-beta { width: 260px; height: 70px; top: 65px; left: -280px; animation-duration: 42s; animation-delay: 5s; opacity: 0.16; }
+        .cloud-gamma { width: 150px; height: 40px; top: 35px; left: -180px; animation-duration: 20s; animation-delay: 10s; }
         @keyframes cloudDrift {
           0% { transform: translateX(0); }
-          100% { transform: translateX(700px); }
+          100% { transform: translateX(calc(100vw + 350px)); }
         }
 
         .sun-core {
           position: absolute;
-          top: -60px; right: -60px; width: 220px; height: 220px;
+          top: -40px; right: -40px; width: 190px; height: 190px;
           background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,204,0,0.5) 50%, rgba(255,255,255,0) 75%);
           border-radius: 50%;
           animation: sunPulse 6s ease-in-out infinite alternate;
         }
         .sun-ray-ring {
           position: absolute;
-          top: -90px; right: -90px; width: 280px; height: 280px;
+          top: -65px; right: -65px; width: 240px; height: 240px;
           background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
           border-radius: 50%;
           animation: sunRotateScale 10s linear infinite;
         }
         @keyframes sunPulse {
-          0% { transform: scale(0.9); opacity: 0.7; }
-          100% { transform: scale(1.1); opacity: 1; }
+          0% { transform: scale(0.95); opacity: 0.8; }
+          100% { transform: scale(1.05); opacity: 1; }
         }
         @keyframes sunRotateScale {
           0% { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(180deg) scale(1.08); }
+          50% { transform: rotate(180deg) scale(1.05); }
           100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* UV Solar Flare Animation */
+        .uv-solar-flare {
+          position: absolute;
+          top: -40px; right: -40px; width: 150px; height: 150px;
+          background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.2) 40%, rgba(255,255,255,0) 70%);
+          border-radius: 50%;
+          pointer-events: none;
+          animation: solarFlareRotate 8s linear infinite;
+        }
+        @keyframes solarFlareRotate {
+          0% { transform: rotate(0deg) scale(0.9); opacity: 0.6; }
+          50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+          100% { transform: rotate(360deg) scale(0.9); opacity: 0.6; }
+        }
+
+        /* Air Quality Flowing Wind Particles */
+        .aqi-particle-stream {
+          position: absolute;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+          height: 2px;
+          border-radius: 2px;
+          pointer-events: none;
+          animation: aqiStreamMove linear infinite;
+        }
+        @keyframes aqiStreamMove {
+          0% { transform: translateX(120px); opacity: 0; }
+          30% { opacity: 0.8; }
+          70% { opacity: 0.8; }
+          100% { transform: translateX(-140px); opacity: 0; }
+        }
+
+        /* Splashing Water Droplet Animations for Humidity */
+        .splash-drop {
+          position: absolute;
+          background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(135, 206, 250, 0.8));
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg);
+          pointer-events: none;
+          animation: dropFallAndSplash cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite;
+        }
+        @keyframes dropFallAndSplash {
+          0% { transform: translateY(-30px) scale(0.6) rotate(-45deg); opacity: 0; }
+          30% { opacity: 1; }
+          70% { transform: translateY(75px) scale(1) rotate(-45deg); opacity: 0.9; }
+          85% { transform: translateY(85px) scale(1.4, 0.4) rotate(0deg); opacity: 0.5; }
+          100% { transform: translateY(70px) scale(0.2) rotate(0deg); opacity: 0; }
+        }
+
+        .splash-ripple-ring {
+          position: absolute;
+          bottom: 10px; right: 25px;
+          border: 1.5px solid rgba(255, 255, 255, 0.7);
+          border-radius: 50%;
+          pointer-events: none;
+          animation: rippleExpand 1.8s ease-out infinite;
+        }
+        @keyframes rippleExpand {
+          0% { width: 0px; height: 0px; opacity: 1; transform: translate(50%, 50%); }
+          100% { width: 70px; height: 24px; opacity: 0; transform: translate(0, 0); }
+        }
+
+        /* Curvy Wind Path Animation */
+        .wind-curve-path {
+          animation: windCurveDrift linear infinite;
+        }
+        @keyframes windCurveDrift {
+          0% { transform: translateX(35px); opacity: 0; }
+          25% { opacity: 0.85; }
+          75% { opacity: 0.85; }
+          100% { transform: translateX(-55px); opacity: 0; }
         }
       `}</style>
 
       {/* 2. Metric Gauges Grid */}
       <div className="row g-3">
+        {/* UV Index Card */}
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="p-3 p-lg-4 rounded-4 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #f857a6 0%, #ff5858 100%)' }}>
+            <div className="uv-solar-flare"></div>
             <div className="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
               <span className="font-label text-white-50">UV Index</span>
               <Sun size={18} className="text-white" />
@@ -307,14 +392,23 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
                 {current.uvIndex} <span className="fs-6 font-body fw-normal text-white-50">Moderate</span>
               </div>
               <div className="progress mt-3 bg-white bg-opacity-25" style={{ height: '6px' }}>
-                <div className="progress-bar bg-white" role="progressbar" style={{ width: `${(current.uvIndex / 12) * 100}%` }}></div>
+                <div 
+                  className="progress-bar bg-white" 
+                  role="progressbar" 
+                  style={{ width: animateBars ? `${(current.uvIndex / 12) * 100}%` : '0%' }}
+                ></div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Air Quality Card */}
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="p-3 p-lg-4 rounded-4 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' }}>
+            <div className="aqi-particle-stream" style={{ width: '90px', top: '25px', right: '-10px', animationDuration: '3s', animationDelay: '0s' }}></div>
+            <div className="aqi-particle-stream" style={{ width: '130px', top: '55px', right: '-30px', animationDuration: '4.2s', animationDelay: '1.5s' }}></div>
+            <div className="aqi-particle-stream" style={{ width: '70px', top: '80px', right: '10px', animationDuration: '2.5s', animationDelay: '0.8s' }}></div>
+
             <div className="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
               <span className="font-label text-white-50">Air Quality</span>
               <ShieldAlert size={18} className="text-white" />
@@ -324,14 +418,27 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
                 {current.airQuality} <span className="fs-6 font-body fw-normal text-white-50">Good</span>
               </div>
               <div className="progress mt-3 bg-white bg-opacity-25" style={{ height: '6px' }}>
-                <div className="progress-bar bg-white" role="progressbar" style={{ width: `${current.airQuality}%` }}></div>
+                <div 
+                  className="progress-bar bg-white" 
+                  role="progressbar" 
+                  style={{ width: animateBars ? `${current.airQuality}%` : '0%' }}
+                ></div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Humidity Card */}
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="p-3 p-lg-4 rounded-4 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #2c5364 0%, #203a43 50%, #0f2027 100%)' }}>
+          <div className="p-3 p-lg-4 rounded-4 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #2980b9 0%, #6dd5ed 100%)' }}>
+            
+            <div className="splash-drop" style={{ width: '10px', height: '14px', right: '45px', top: '10px', animationDuration: '1.6s', animationDelay: '0s' }}></div>
+            <div className="splash-drop" style={{ width: '7px', height: '10px', right: '25px', top: '15px', animationDuration: '1.2s', animationDelay: '0.6s' }}></div>
+            <div className="splash-drop" style={{ width: '12px', height: '16px', right: '65px', top: '5px', animationDuration: '2.0s', animationDelay: '0.9s' }}></div>
+
+            <div className="splash-ripple-ring" style={{ animationDelay: '0s' }}></div>
+            <div className="splash-ripple-ring" style={{ animationDelay: '0.8s' }}></div>
+
             <div className="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
               <span className="font-label text-white-50">Humidity</span>
               <Droplets size={18} className="text-white" />
@@ -339,14 +446,26 @@ export default function DashboardView({ unit, isDarkMode = false, weather: paren
             <div className="position-relative z-1">
               <div className="h3 font-headline fw-bold mb-1">{current.humidity}%</div>
               <div className="progress mt-3 bg-white bg-opacity-25" style={{ height: '6px' }}>
-                <div className="progress-bar bg-white" role="progressbar" style={{ width: `${current.humidity}%` }}></div>
+                <div 
+                  className="progress-bar bg-white" 
+                  role="progressbar" 
+                  style={{ width: animateBars ? `${current.humidity}%` : '0%' }}
+                ></div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Wind Speed Card */}
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="p-3 p-lg-4 rounded-4 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #4ca1af 0%, #2c3e50 100%)' }}>
+            
+            <svg className="position-absolute" style={{ top: '15px', right: '-15px', width: '130px', height: '60px', pointerEvents: 'none' }} viewBox="0 0 130 60">
+              <path className="wind-curve-path" style={{ animationDuration: '2.4s', animationDelay: '0s' }} d="M 0 10 Q 35 25, 70 10 T 130 15" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.8" strokeLinecap="round" />
+              <path className="wind-curve-path" style={{ animationDuration: '3.2s', animationDelay: '1.2s' }} d="M 10 35 Q 50 15, 90 35 T 130 30" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+              <path className="wind-curve-path" style={{ animationDuration: '2.0s', animationDelay: '0.6s' }} d="M 5 50 Q 40 35, 75 50 T 130 45" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+
             <div className="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
               <span className="font-label text-white-50">Wind Speed</span>
               <Wind size={18} className="text-white" />
